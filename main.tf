@@ -22,7 +22,7 @@ resource "aws_instance" "blog" {
     Name = "HelloWorld"
   }
 
-  vpc_security_group_ids = [module.security-group-module.security_group_id]
+  vpc_security_group_ids = [module.security_group_module.security_group_id]
 }
 
 data "aws_vpc" "default" {
