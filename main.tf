@@ -29,7 +29,7 @@ data "aws_vpc" "default" {
   default = true
 }
 
-module "security-group-module" {
+module "security_group_module" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
   
