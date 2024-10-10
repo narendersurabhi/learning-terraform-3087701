@@ -23,7 +23,6 @@ module "blog_asg" {
   name = "blog"
   min_size = 1
   max_size = 10
-  desired_capacity = 1
 
   vpc_zone_identifier  = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
