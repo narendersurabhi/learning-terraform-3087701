@@ -33,7 +33,7 @@ module "blog_vpc" {
   name = "dev"
   cidr = "10.0.0.0/16"
 
-  azs             = ["usa-west-2a", "usa-west-2b", "usa-west-2c"]
+  azs             = ["usw2-az1", "usw2-az2", "usw2-az3", "usw2-az4"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   tags = {
