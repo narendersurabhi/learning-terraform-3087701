@@ -1,11 +1,11 @@
-output "instance_ami" {
-  value = aws_instance.blog.ami
+output "asg_target_group_arns" {
+  value = module.blog_asg.autoscaling_group_target_group_arns
 }
 
-output "instance_arn" {
-  value = aws_instance.blog.arn
+output "asg_arn" {
+  value = module.blog_asg.autoscaling_group_arn
 }
 
-output "public_dns" {
-  value = aws_instance.blog.public_dns
+output "alb_dns_name" {
+  value = module.blog_alb.dns_name
 }
