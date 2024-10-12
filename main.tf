@@ -35,7 +35,7 @@ resource "aws_launch_configuration" "blog_template" {
   name_prefix     = "aws-asg-"
   image_id        = data.aws_ami.app_ami.id
   instance_type   = var.instance_type  
-  user_data       = file("user-data.sh")
+  user_data       = file("user-data-2.sh")
   security_groups = [aws_security_group.sg_web.id] 
 
   lifecycle {
