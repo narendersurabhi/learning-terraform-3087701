@@ -125,7 +125,7 @@ resource "aws_lb_target_group" "blog_tg" {
 */
 
 resource "aws_lb" "blog_alb" {
-  name               = "blog_alb"
+  name               = "blog-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg_lb.id]
