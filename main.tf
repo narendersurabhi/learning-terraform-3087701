@@ -30,36 +30,6 @@ module "blog_vpc" {
   }
 }
 
-/*
-module "blog_lb_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "5.2.0"
-  name = "blog_lb_sg"
-  
-  ingress_rules = [ "http-80-tcp", "https-443-tcp" ]
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-  
-  egress_rules = ["all-all"]
-  egress_cidr_blocks = ["0.0.0.0/0"]
-
-  vpc_id = module.blog_vpc.vpc_id
-}
-
-module "blog_as_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "5.2.0"
-  name = "blog_as_sg"
-  
-  ingress_rules = [ "http-80-tcp", "https-443-tcp" ]
-  ingress_cidr_blocks = [module.blog_lb_sg.security_group_id]
-  
-  egress_rules = ["all-all"]
-  egress_cidr_blocks = ["0.0.0.0/0"]
-
-  vpc_id = module.blog_vpc.vpc_id
-}
-*/
-
 resource "aws_launch_configuration" "blog_template" {
   name_prefix     = "aws-asg-"
   image_id        = data.aws_ami.app_ami.id
@@ -71,14 +41,6 @@ resource "aws_launch_configuration" "blog_template" {
     create_before_destroy = true
   }
 }
-
-/*
-resource "aws_launch_template" "foobar" {
-  name_prefix   = "foobar"
-  image_id      = "ami-1a2b3c"
-  instance_type = "t2.micro"
-}
-*/
 
 resource "aws_autoscaling_group" "blog_asg" {
   //availability_zones = ["us-east-2a", "us-east-2b"]
@@ -114,14 +76,7 @@ resource "aws_autoscaling_group" "blog_asg" {
 
 }
 
-/*
-resource "aws_lb_target_group" "blog_tg" {
-  name     = "blog-target-group"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = module.blog_vpc.vpc_id
-}
-*/
+
 
 resource "aws_lb" "blog_alb" {
   name               = "blog-alb"
@@ -129,20 +84,9 @@ resource "aws_lb" "blog_alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg_lb.id]
   subnets            = module.blog_vpc.public_subnets
-}
+  depends_on         = [aws_security_group.sg_lb]
 
-/*
-resource "aws_lb_listener" "blog_lb_lstnr" {
-  load_balancer_arn = aws_lb.blog_alb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.blog_tg.arn
-  }
 }
-*/
 
 resource "aws_lb_target_group" "blog_tg" {
   name     = "blog-target-group"
@@ -194,6 +138,28 @@ resource "aws_security_group" "sg_web" {
 
   vpc_id = module.blog_vpc.vpc_id
 }
+
+/*
+resource "aws_lb_listener" "blog_lb_lstnr" {
+  load_balancer_arn = aws_lb.blog_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.blog_tg.arn
+  }
+}
+*/
+
+/*
+resource "aws_lb_target_group" "blog_tg" {
+  name     = "blog-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = module.blog_vpc.vpc_id
+}
+*/
 
 /*
 resource "aws_lb_target_group" "blog_tg" {
@@ -255,3 +221,40 @@ module "blog_alb" {
 }
 */
 
+/*
+module "blog_lb_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.2.0"
+  name = "blog_lb_sg"
+  
+  ingress_rules = [ "http-80-tcp", "https-443-tcp" ]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+  
+  egress_rules = ["all-all"]
+  egress_cidr_blocks = ["0.0.0.0/0"]
+
+  vpc_id = module.blog_vpc.vpc_id
+}
+
+module "blog_as_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.2.0"
+  name = "blog_as_sg"
+  
+  ingress_rules = [ "http-80-tcp", "https-443-tcp" ]
+  ingress_cidr_blocks = [module.blog_lb_sg.security_group_id]
+  
+  egress_rules = ["all-all"]
+  egress_cidr_blocks = ["0.0.0.0/0"]
+
+  vpc_id = module.blog_vpc.vpc_id
+}
+*/
+
+/*
+resource "aws_launch_template" "foobar" {
+  name_prefix   = "foobar"
+  image_id      = "ami-1a2b3c"
+  instance_type = "t2.micro"
+}
+*/
