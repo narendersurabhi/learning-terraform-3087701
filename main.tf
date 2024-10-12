@@ -169,7 +169,7 @@ resource "aws_security_group" "sg_web" {
   vpc_id = module.blog_vpc.vpc_id
 }
 
-/*
+
 resource "aws_lb_listener" "blog_lb_lstnr" {
   load_balancer_arn = aws_lb.blog_alb.arn
   port              = "80"
@@ -180,7 +180,7 @@ resource "aws_lb_listener" "blog_lb_lstnr" {
     target_group_arn = aws_lb_target_group.blog_tg.arn
   }
 }
-*/
+
 
 /*
 resource "aws_lb_target_group" "blog_tg" {
