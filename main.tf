@@ -49,7 +49,7 @@ resource "aws_launch_template" "blog_template" {
   image_id      = data.aws_ami.app_ami.id
   instance_type = var.instance_type
 
-  user_data       = filebase64("user-data-2.sh")
+  user_data       = file("user-data.sh")
 
   network_interfaces {
     security_groups = [aws_security_group.sg_web.id]
