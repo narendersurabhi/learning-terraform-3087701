@@ -30,14 +30,17 @@ module "blog_vpc" {
   }
 }
 
+/*
 resource "aws_subnet" "main" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
+  assign_ipv6_address_on_creation = "true"
 
   tags = {
     Name = "Main"
   }
 }
+*/
 
 /*
 resource "aws_launch_configuration" "blog_template" {
