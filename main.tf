@@ -73,7 +73,7 @@ resource "aws_launch_template" "blog_template" {
     create_before_destroy = true
   }
 
-  depends_on         = [aws_security_group.sg_web]  
+  depends_on         = [aws_security_group.sg_web.id]  
 }
 
 resource "aws_autoscaling_group" "blog_asg" {
@@ -106,7 +106,7 @@ resource "aws_autoscaling_group" "blog_asg" {
     propagate_at_launch = true
   }
 
-  depends_on         = [aws_launch_template.blog_template, module.blog_vpc]  
+  depends_on         = [aws_launch_template.blog_template.id, module.blog_vpc.public_subnets]  
 
 }
 
@@ -118,7 +118,7 @@ resource "aws_lb" "blog_alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg_lb.id]
   subnets            = module.blog_vpc.public_subnets
-  depends_on         = [aws_security_group.sg_lb, module.blog_vpc]  
+  depends_on         = [aws_security_group.sg_lb.id, module.blog_vpc.public_subnets]  
 }
 
 resource "aws_lb_target_group" "blog_tg" {
@@ -127,7 +127,7 @@ resource "aws_lb_target_group" "blog_tg" {
   protocol = "HTTP"
   vpc_id   = module.blog_vpc.vpc_id
 
-  depends_on         = [module.blog_vpc]
+  depends_on         = [module.blog_vpc.vpc_id]
 }
 
 resource "aws_autoscaling_attachment" "auto_to_targ" {
@@ -135,7 +135,7 @@ resource "aws_autoscaling_attachment" "auto_to_targ" {
   //alb_target_group_arn   = aws_lb_target_group.blog_tg.arn
   lb_target_group_arn    = aws_lb_target_group.blog_tg.arn
 
-  depends_on         = [aws_autoscaling_group.blog_asg, aws_lb_target_group.blog_tg]
+  depends_on         = [aws_autoscaling_group.blog_asg.id, aws_lb_target_group.blog_tg.arn]
 }
 
 resource "aws_security_group" "sg_lb" {
@@ -156,7 +156,7 @@ resource "aws_security_group" "sg_lb" {
 
   vpc_id = module.blog_vpc.vpc_id
 
-  depends_on         = [module.blog_vpc]
+  depends_on         = [module.blog_vpc.vpc_id]
 }
 
 resource "aws_security_group" "sg_web" {
@@ -177,7 +177,7 @@ resource "aws_security_group" "sg_web" {
 
   vpc_id = module.blog_vpc.vpc_id
 
-  depends_on         = [module.blog_vpc]
+  depends_on         = [module.blog_vpc.vpc_id]
 }
 
 
@@ -191,7 +191,7 @@ resource "aws_lb_listener" "blog_lb_lstnr" {
     target_group_arn = aws_lb_target_group.blog_tg.arn
   }
 
-  depends_on         = [aws_lb.blog_alb, aws_lb_target_group]
+  depends_on         = [aws_lb.blog_alb.arn, aws_lb_target_group.blog_tg.arn]
 }
 
 
