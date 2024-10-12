@@ -88,8 +88,7 @@ resource "aws_autoscaling_group" "blog_asg" {
   name = "blog"
 
   vpc_zone_identifier   = module.blog_vpc.public_subnets
-  //security_groups = [aws_security_group.sg_web.id] 
-  vpc_zone_identifier  = module.blog_vpc.public_subnets
+  //security_groups = [aws_security_group.sg_web.id]   
   launch_configuration = aws_launch_configuration.blog_template.name
   
   /*
