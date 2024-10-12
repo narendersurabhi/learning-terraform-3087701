@@ -131,6 +131,7 @@ resource "aws_lb" "blog_alb" {
   subnets            = module.blog_vpc.public_subnets
 }
 
+/*
 resource "aws_lb_listener" "blog_lb_lstnr" {
   load_balancer_arn = aws_lb.blog_alb.arn
   port              = "80"
@@ -141,7 +142,7 @@ resource "aws_lb_listener" "blog_lb_lstnr" {
     target_group_arn = aws_lb_target_group.blog_tg.arn
   }
 }
-
+*/
 
 resource "aws_lb_target_group" "blog_tg" {
   name     = "blog-target-group"
@@ -152,7 +153,8 @@ resource "aws_lb_target_group" "blog_tg" {
 
 resource "aws_autoscaling_attachment" "auto_to_targ" {
   autoscaling_group_name = aws_autoscaling_group.blog_asg.id
-  alb_target_group_arn   = aws_lb_target_group.blog_tg.arn
+  //alb_target_group_arn   = aws_lb_target_group.blog_tg.arn
+  lb_target_group_arn    = aws_lb_target_group.blog_tg.arn
 }
 
 resource "aws_security_group" "sg_lb" {
