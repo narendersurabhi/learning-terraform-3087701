@@ -30,12 +30,30 @@ module "blog_vpc" {
   }
 }
 
+/*
 resource "aws_launch_configuration" "blog_template" {
   name_prefix     = "aws-asg-"
   image_id        = data.aws_ami.app_ami.id
   instance_type   = var.instance_type  
   user_data       = file("user-data.sh")
   security_groups = [aws_security_group.sg_web.id] 
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+*/
+
+resource "aws_launch_template" "blog_template" {
+  name_prefix   = "aws-launch-template-"
+  image_id      = data.aws_ami.app_ami.id
+  instance_type = var.instance_type
+
+  user_data       = file("user-data.sh")
+
+  network_interfaces {
+    security_groups = [aws_security_group.sg_web.id]
+  }
 
   lifecycle {
     create_before_destroy = true
@@ -51,14 +69,12 @@ resource "aws_autoscaling_group" "blog_asg" {
 
   vpc_zone_identifier   = module.blog_vpc.public_subnets
   //security_groups = [aws_security_group.sg_web.id]   
-  launch_configuration = aws_launch_configuration.blog_template.name
+  //launch_configuration = aws_launch_configuration.blog_template.name
   
-  /*
   launch_template {
-    id      = aws_launch_template.example.id
-    version = aws_launch_template.example.latest_version
+    id      = aws_launch_template.blog_template.id
+    version = aws_launch_template.blog_template.latest_version
   }
-  */
 
   instance_refresh {
     strategy = "Rolling"
@@ -69,8 +85,8 @@ resource "aws_autoscaling_group" "blog_asg" {
   }  
 
   tag {
-    key                 = "Key"
-    value               = "Value"
+    key                 = "Environment"
+    value               = "dev"
     propagate_at_launch = true
   }
 
