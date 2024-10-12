@@ -157,7 +157,7 @@ resource "aws_autoscaling_attachment" "auto_to_targ" {
 }
 
 resource "aws_security_group" "sg_lb" {
-  name = "sg-lb"
+  name = "sg_lb"
   ingress {
     from_port   = 80
     to_port     = 80
