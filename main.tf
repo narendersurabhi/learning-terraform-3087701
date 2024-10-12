@@ -82,14 +82,14 @@ resource "aws_launch_template" "foobar" {
 
 resource "aws_autoscaling_group" "blog_asg" {
   availability_zones = ["us-east-2a", "us-east-2b"]
-  desired_capacity   = 1
-  max_size           = 3
-  min_size           = 1
+  desired_capacity   = 2
+  max_size           = 4
+  min_size           = 2
   name = "blog"
 
   vpc_zone_identifier   = module.blog_vpc.public_subnets
-  security_groups = [aws_security_group.sg_web.id] 
-
+  //security_groups = [aws_security_group.sg_web.id] 
+  vpc_zone_identifier  = module.blog_vpc.public_subnets
   launch_configuration = aws_launch_configuration.blog_template.name
   
   /*
