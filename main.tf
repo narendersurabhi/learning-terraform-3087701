@@ -30,6 +30,15 @@ module "blog_vpc" {
   }
 }
 
+resource "aws_subnet" "main" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.1.0/24"
+
+  tags = {
+    Name = "Main"
+  }
+}
+
 /*
 resource "aws_launch_configuration" "blog_template" {
   name_prefix     = "aws-asg-"
@@ -51,7 +60,9 @@ resource "aws_launch_template" "blog_template" {
 
   user_data       = file("user-data.sh")
 
+
   network_interfaces {
+    associate_public_ip_address = true
     security_groups = [aws_security_group.sg_web.id]
   }
 
