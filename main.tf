@@ -72,6 +72,8 @@ resource "aws_launch_template" "blog_template" {
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on         = [aws_security_group.sg_web]  
 }
 
 resource "aws_autoscaling_group" "blog_asg" {
@@ -104,6 +106,8 @@ resource "aws_autoscaling_group" "blog_asg" {
     propagate_at_launch = true
   }
 
+  depends_on         = [aws_launch_template.blog_template, module.blog_vpc]  
+
 }
 
 
@@ -114,8 +118,7 @@ resource "aws_lb" "blog_alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg_lb.id]
   subnets            = module.blog_vpc.public_subnets
-  depends_on         = [aws_security_group.sg_lb]
-
+  depends_on         = [aws_security_group.sg_lb, module.blog_vpc]  
 }
 
 resource "aws_lb_target_group" "blog_tg" {
@@ -123,12 +126,16 @@ resource "aws_lb_target_group" "blog_tg" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = module.blog_vpc.vpc_id
+
+  depends_on         = [module.blog_vpc]
 }
 
 resource "aws_autoscaling_attachment" "auto_to_targ" {
   autoscaling_group_name = aws_autoscaling_group.blog_asg.id
   //alb_target_group_arn   = aws_lb_target_group.blog_tg.arn
   lb_target_group_arn    = aws_lb_target_group.blog_tg.arn
+
+  depends_on         = [aws_autoscaling_group.blog_asg, aws_lb_target_group.blog_tg]
 }
 
 resource "aws_security_group" "sg_lb" {
@@ -148,6 +155,8 @@ resource "aws_security_group" "sg_lb" {
   }
 
   vpc_id = module.blog_vpc.vpc_id
+
+  depends_on         = [module.blog_vpc]
 }
 
 resource "aws_security_group" "sg_web" {
@@ -167,6 +176,8 @@ resource "aws_security_group" "sg_web" {
   }
 
   vpc_id = module.blog_vpc.vpc_id
+
+  depends_on         = [module.blog_vpc]
 }
 
 
@@ -179,6 +190,8 @@ resource "aws_lb_listener" "blog_lb_lstnr" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.blog_tg.arn
   }
+
+  depends_on         = [aws_lb.blog_alb, aws_lb_target_group]
 }
 
 
