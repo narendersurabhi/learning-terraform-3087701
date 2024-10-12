@@ -115,13 +115,14 @@ resource "aws_autoscaling_group" "blog_asg" {
 
 }
 
-
+/*
 resource "aws_lb_target_group" "blog_tg" {
   name     = "blog-target-group"
   port     = 80
   protocol = "HTTP"
   vpc_id   = module.blog_vpc.vpc_id
 }
+*/
 
 resource "aws_lb" "blog_alb" {
   name               = "blog_alb"
