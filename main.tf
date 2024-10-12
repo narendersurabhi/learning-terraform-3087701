@@ -81,7 +81,7 @@ resource "aws_launch_template" "foobar" {
 */
 
 resource "aws_autoscaling_group" "blog_asg" {
-  availability_zones = ["us-east-2a", "us-east-2b"]
+  //availability_zones = ["us-east-2a", "us-east-2b"]
   desired_capacity   = 2
   max_size           = 4
   min_size           = 2
