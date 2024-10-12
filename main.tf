@@ -61,7 +61,7 @@ resource "aws_launch_template" "blog_template" {
   image_id      = data.aws_ami.app_ami.id
   instance_type = var.instance_type
 
-  user_data       = file("user-data.sh")
+  //user_data       = file("user-data.sh")
 
 
   network_interfaces {
